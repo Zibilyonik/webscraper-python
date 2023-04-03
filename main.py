@@ -14,7 +14,8 @@ def get_data():
     articles = soup.find_all('article')
     for article in articles:
         title = article.find('span', class_='c-meta__type').text
-        body = article.find('p').text
+        body_link= article.find('div', class_='c-card__link u-link-inherit').text
+        testing = article
         if title == 'News':
             title = article.find('a', class_='c-card__link').text
             for i in title:
@@ -22,18 +23,21 @@ def get_data():
                     title = title.replace(i, '')
                 elif i in string.whitespace:
                     title = title.replace(i, '_')
-            items[title] = body
-    print(items)
+            items[title] = body_link
+    print(testing)
     return items
 
 def write_data(items):
     for item in items:
-        with open(f'{item}.txt', 'w', 'utf-8') as file:
-            file.write(items[item])
+        response = requests.get(items[item])
+        soup = BeautifulSoup(response.text, 'html.parser')
+        body = soup.find('p', class_='article__teaser')
+        file = open(f'{str(item)}.txt', 'wb')
+        file.write(str(body).encode())
+        file.close()
 
 def main():
-    write_data(get_data())
-    
+    get_data()
 
 
 main()
