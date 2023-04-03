@@ -29,7 +29,7 @@ def get_data():
 
 def write_data(items):
     for item in items:
-        response = requests.get(items[item])
+        response = requests.get(f'https://www.nature.com{items[item]}')
         soup = BeautifulSoup(response.text, 'html.parser')
         body = soup.find('p', class_='article__teaser')
         file = open(f'{str(item)}.txt', 'wb')
@@ -37,7 +37,7 @@ def write_data(items):
         file.close()
 
 def main():
-    get_data()
+    write_data(get_data())
 
 
 main()
